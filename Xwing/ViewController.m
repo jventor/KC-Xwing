@@ -20,11 +20,115 @@
                                                           action:@selector(userDidTap:)];
     
     [self.view addGestureRecognizer:tap];
+    
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                          action: @selector(userDidPan:)];
+    [self.view addGestureRecognizer:pan];
+  
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(userDidSwipe:)];
+    [self.view addGestureRecognizer:swipe];
+}
+
+-(void) userDidSwipe: (UISwipeGestureRecognizer *)swipe{
+    if (swipe.state == UIGestureRecognizerStateRecognized){
+        NSLog(@"Swipe!");
+        static CGFloat angulo = 0;
+        
+            UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationCurveEaseInOut;
+        
+        [UIView animateWithDuration:3
+                              delay:0
+             usingSpringWithDamping:0.2
+              initialSpringVelocity:0.8 options:options
+                         animations:^{
+                             angulo = angulo + M_2_PI;
+                             self.xwingView.transform = CGAffineTransformMakeRotation(angulo);
+                         } completion:^(BOOL finished) {
+                             
+                         }
+         ];
+    }
+}
+
+- (void) userDidPan: (UIPanGestureRecognizer *) pan{
+    CGPoint newCenter = [pan locationInView:self.spaceView];
+
+    UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationCurveEaseInOut;
+    
+    [UIView animateWithDuration:3
+                          delay:0
+                        options: options
+                     animations:^{
+                         self.xwingView.center = newCenter;
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         
+                     }
+     ];
+    [UIView animateWithDuration: 1.5
+                          delay:0
+                        options:
+                     options
+                     animations:^{
+                         self.xwingView.alpha = 0;
+                     } completion:^(BOOL finished) {
+                         [UIView animateWithDuration: 1.5
+                                               delay:0
+                                             options:
+                          options
+                                          animations:^{
+                                              self.xwingView.alpha = 1;
+                                          } completion:^(BOOL finished) {
+                                              
+                                          }];
+                     }];
+   
+    
+    
 }
 
 - (void) userDidTap: (UITapGestureRecognizer *) tap{
     CGPoint newCenter = [tap locationInView:self.spaceView];
-    self.xwingView.center = newCenter;
+    CGPoint oldCenter = self.xwingView.center;
+    UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationCurveEaseInOut;
+    
+    [UIView animateWithDuration:2
+                          delay:0
+                        options: options
+                     animations:^{
+                         self.xwingView.center = newCenter;
+
+                     }
+                     completion:^(BOOL finished) {
+                         
+                     }
+     ];
+    [UIView animateWithDuration:1
+                          delay:0
+                        options: options
+                     animations:^{
+                         CGFloat angulo = oldCenter.x < newCenter.x ? M_2_PI : -M_2_PI;
+                         self.xwingView.transform = CGAffineTransformMakeRotation(angulo);
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:1
+                                               delay:0
+                                             options: options
+                                          animations:^{
+                                              self.xwingView.transform = CGAffineTransformIdentity;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              
+                                          }
+                          ];
+                        
+                     }
+     ];
+    
+    
+    
 }
 
 - (void)viewDidLoad {
