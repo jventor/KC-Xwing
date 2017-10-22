@@ -13,6 +13,19 @@
 @end
 
 @implementation ViewController
+-(void) viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: self
+                                                          action:@selector(userDidTap:)];
+    
+    [self.view addGestureRecognizer:tap];
+}
+
+- (void) userDidTap: (UITapGestureRecognizer *) tap{
+    CGPoint newCenter = [tap locationInView:self.spaceView];
+    self.xwingView.center = newCenter;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
