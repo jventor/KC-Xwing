@@ -1,0 +1,2 @@
+- Utilización de gestos
+- Utilización de la transformada afín
